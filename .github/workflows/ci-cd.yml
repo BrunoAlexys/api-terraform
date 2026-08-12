@@ -94,20 +94,21 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: us-east-1
-    services:
-      localstack:
-        image: localstack/localstack:latest
-        ports:
-          - 4566:4566
-        env:
-          DEFAULT_REGION: us-east-1
-        options: >-
-          -v /var/run/docker.sock:/var/run/docker.sock
-          --name=localstack
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Start LocalStack (Docker)
+        run: |
+          docker run -d --name localstack -p 4566:4566 \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -e DEFAULT_REGION=us-east-1 \
+            -e LOCALSTACK_API_KEY=${{ secrets.LOCALSTACK_API_KEY }} \
+            localstack/localstack:latest
+          
+          echo "Aguardando LocalStack iniciar completamente..."
+          sleep 15
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2

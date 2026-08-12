@@ -100,10 +100,22 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Start LocalStack
-        uses: LocalStack/setup-localstack@v0.2.3
-        with:
-          image-tag: 'latest'
-          use-pro: 'false'
+        run: |
+          docker run -d --name localstack \
+            -p 4566:4566 \
+            -e DEFAULT_REGION=us-east-1 \
+            -e LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT=1 \
+            localstack/localstack:latest
+          
+          echo "Aguardando LocalStack ficar pronto..."
+          for i in $(seq 1 30); do
+            if curl -s http://localhost:4566/_localstack/health | grep -q '"running"'; then
+              echo "LocalStack está pronto!"
+              break
+            fi
+            echo "Tentativa $i/30..."
+            sleep 3
+          done
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2

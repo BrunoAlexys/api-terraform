@@ -111,25 +111,25 @@ jobs:
           for i in $(seq 1 30); do
             if curl -s http://localhost:4566/_localstack/health | grep -q '"running"'; then
               echo "LocalStack está pronto!"
-              break
+              exit 0
             fi
             echo "Tentativa $i/30..."
             sleep 3
           done
+          echo "ERRO: LocalStack não iniciou a tempo!"
+          docker logs localstack
+          exit 1
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_wrapper: false
 
-      - name: Setup AWS CLI for LocalStack
-        run: |
-          pip install awscli-local
-
       - name: Initialize Terraform Remote State (LocalStack Mock)
         run: |
-          # The pipeline creates the S3 bucket needed for remote state inside the pipeline's LocalStack service
-          awslocal s3api create-bucket --bucket tf-state-bucket --region us-east-1
+          aws --endpoint-url=http://localhost:4566 s3api create-bucket \
+            --bucket tf-state-bucket \
+            --region us-east-1
 
       - name: Terraform Init
         working-directory: ./terraform

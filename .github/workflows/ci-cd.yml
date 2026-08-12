@@ -104,7 +104,7 @@ jobs:
           docker run -d --name localstack \
             -p 4566:4566 \
             -e DEFAULT_REGION=us-east-1 \
-            -e LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT=1 \
+            -e LOCALSTACK_AUTH_TOKEN=${{ secrets.LOCALSTACK_AUTH_TOKEN }} \
             localstack/localstack:latest
           
           echo "Aguardando LocalStack ficar pronto..."

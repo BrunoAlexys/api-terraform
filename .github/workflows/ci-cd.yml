@@ -99,17 +99,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Start LocalStack (Docker)
-        run: |
-          docker pull localstack/localstack:latest
-          docker run -d --name localstack -p 4566:4566 \
-            -v /var/run/docker.sock:/var/run/docker.sock \
-            -e DEFAULT_REGION=us-east-1 \
-            localstack/localstack:latest
-          
-          echo "Aguardando LocalStack iniciar completamente..."
-          timeout 60s bash -c 'until curl -s http://localhost:4566/_localstack/health; do echo "Wait..."; sleep 2; done'
-          echo "LocalStack está pronto!"
+      - name: Start LocalStack
+        uses: LocalStack/setup-localstack@v0.2.3
+        with:
+          image-tag: 'latest'
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2

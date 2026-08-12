@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: api-filmes
+    ports:
+      - "3000:3000"
+    environment:
+      # Aponta para o LocalStack Desktop rodando na sua máquina host
+      - DYNAMODB_ENDPOINT=http://host.docker.internal:4566
+    extra_hosts:
+      # Garante que o host.docker.internal funcione perfeitamente
+      - "host.docker.internal:host-gateway"

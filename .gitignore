@@ -1,0 +1,29 @@
+# Dependências do Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Variáveis de Ambiente
+.env
+.env.local
+.env.test
+
+# Cobertura de Testes
+coverage/
+
+# Arquivos do Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/.terraform.lock.hcl
+terraform/crash.log
+
+# Arquivos de Sistema e Editores
+.DS_Store
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

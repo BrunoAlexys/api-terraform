@@ -99,12 +99,11 @@ jobs:
         image: localstack/localstack:latest
         ports:
           - 4566:4566
-          - 4571:4571
         env:
-          SERVICES: s3,dynamodb
           DEFAULT_REGION: us-east-1
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        options: >-
+          -v /var/run/docker.sock:/var/run/docker.sock
+          --name=localstack
 
     steps:
       - name: Checkout Code

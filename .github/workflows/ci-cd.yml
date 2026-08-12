@@ -101,14 +101,15 @@ jobs:
 
       - name: Start LocalStack (Docker)
         run: |
+          docker pull localstack/localstack:latest
           docker run -d --name localstack -p 4566:4566 \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -e DEFAULT_REGION=us-east-1 \
-            -e LOCALSTACK_API_KEY=${{ secrets.LOCALSTACK_API_KEY }} \
             localstack/localstack:latest
           
           echo "Aguardando LocalStack iniciar completamente..."
-          sleep 15
+          timeout 60s bash -c 'until curl -s http://localhost:4566/_localstack/health; do echo "Wait..."; sleep 2; done'
+          echo "LocalStack está pronto!"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
